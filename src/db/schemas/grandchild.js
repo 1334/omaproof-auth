@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
   grandChild.associate = function(models) {
     grandChild.belongsToMany(models.grandParent, {
       foreignKey: 'grandChildId',
-      as: 'grandChild',
+      as: 'parents',
       through: models.relation
     });
   };
