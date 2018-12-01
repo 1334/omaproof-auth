@@ -19,8 +19,9 @@ module.exports = (sequelize, DataTypes) => {
   );
   grandChild.associate = function(models) {
     grandChild.belongsToMany(models.grandParent, {
-      through: models.relation,
-      foreignKey: 'grandChildId'
+      foreignKey: 'grandChildId',
+      as: 'grandChild',
+      through: models.relation
     });
   };
   return grandChild;

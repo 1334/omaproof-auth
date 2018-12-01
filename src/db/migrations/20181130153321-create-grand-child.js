@@ -14,6 +14,13 @@ module.exports = {
       dateOfBirth: {
         type: Sequelize.DATE
       },
+      monthOfBirth: {
+        type: Sequelize.INTEGER,
+        validate: {
+          min: 1,
+          max: 12
+        }
+      },
       picture: {
         type: Sequelize.STRING
       },
