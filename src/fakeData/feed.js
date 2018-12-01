@@ -1,9 +1,9 @@
 const faker = require('faker');
 faker.locale = 'es';
 // Create fake data
-const db = require('./db/schemas');
+const db = require('../db/schemas');
 
-let { userId } = require('./fakeData/fakeNews.json');
+let { userId } = require('./fakeNews.json');
 
 const createGrandMother = async () => {
   const grandMa = {

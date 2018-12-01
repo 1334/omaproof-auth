@@ -78,6 +78,22 @@ const dbQuery = async data => {
   return query_result1;
 };
 
+// const dbChildQuery = async GPIDarr => {
+//   const query_result1 = await db.grandChild.findAll({
+//     include: [
+//       {
+//         association: 'parents',
+//         where: {
+//           id: {
+//             [Op.in]: GPIDarr
+//           }
+//         }
+//       }
+//     ]
+//   });
+//   return query_result1;
+// };
+
 const test = async () => {
   const MockData = {
     selectedNames: [],
@@ -89,6 +105,39 @@ const test = async () => {
   const result = await dbQuery(MockData);
   // eslint-disable-next-line no-console
   console.log(result.length);
+  const result2 = await getChildrenForQuiz([1]);
+  // eslint-disable-next-line no-console
+  console.log(result2.map(el => el.get({ plain: true })));
 };
 
 test();
+
+const getChildrenForQuiz = async (remainingGPIDs, amount = 8, limit = 300) => {
+  let names = [];
+  let result = [];
+  const query_result1 = await db.grandChild.findAll({
+    include: [
+      {
+        association: 'parents',
+        where: {
+          id: {
+            [Op.in]: remainingGPIDs
+          }
+        }
+      }
+    ],
+    limit: limit
+  });
+
+  // random selection
+
+  while (names.length <= amount) {
+    let sel = Math.round(Math.random() * (query_result1.length - 1));
+    let selected = query_result1[sel];
+    if (names.indexOf(selected.firstname) < 0) {
+      names.push(selected.firstname);
+      result.push(selected);
+    }
+  }
+  return result;
+};
