@@ -80,9 +80,7 @@ const selectNamesOfChildrenSelection = async (
   const query = await getGrandChildrenBySessionData(IDs, sessionData, [
     'firstname'
   ]);
-  let queriedNames = new Set(
-    query.map(el => el.get({ plain: true }).firstname)
-  );
+  let queriedNames = new Set(query.map(el => el.firstname));
   queriedNames = [...queriedNames];
   let draw = randomNumberGenerator(0, queriedNames.length - 1, amount);
   const drawnNames = draw.map(number => queriedNames[number]);
