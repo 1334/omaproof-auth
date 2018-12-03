@@ -4,6 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     'grandParent',
     {
       userId: DataTypes.STRING,
+      password: DataTypes.STRING,
+      contactNumber: DataTypes.STRING,
       firstname: DataTypes.STRING,
       dateOfBirth: DataTypes.DATE,
       monthOfBirth: {

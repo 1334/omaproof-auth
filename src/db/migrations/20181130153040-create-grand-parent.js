@@ -17,6 +17,14 @@ module.exports = {
       dateOfBirth: {
         type: Sequelize.DATE
       },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      contactNumber: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       monthOfBirth: {
         type: Sequelize.INTEGER,
         validate: {
