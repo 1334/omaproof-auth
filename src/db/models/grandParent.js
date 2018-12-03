@@ -1,4 +1,4 @@
-const db = require('../db/schemas');
+const db = require('../schemas');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -6,6 +6,7 @@ const getGrandParentsBySessionData = async (
   sessionData,
   attributes = ['userId']
 ) => {
+  if (!sessionData) throw new Error('Invalid sessiondata');
   const {
     selectedNames,
     unselectedNames,
@@ -23,6 +24,7 @@ const getGrandParentsBySessionData = async (
     contactNumberQuery,
     nameQuery;
 
+  console.log(selectedNames);
   !selectedNames.length
     ? (selectedNamesQuery = {
         firstname: {
@@ -38,6 +40,8 @@ const getGrandParentsBySessionData = async (
         }
       });
 
+  console.log('selectedNamesQuery: ', selectedNamesQuery);
+
   !selectedMonths.length
     ? (selectedMonthQuery = {})
     : (selectedMonthQuery = {
@@ -46,11 +50,15 @@ const getGrandParentsBySessionData = async (
         }
       });
 
+  console.log('selectedMonths: ', selectedMonthQuery);
+
   !monthOfBirth
     ? (selectedMonthOfBirth = {})
     : (selectedMonthOfBirth = {
         monthOfBirth: monthOfBirth
       });
+
+  console.log('monthOfBirth: ', selectedMonthOfBirth);
 
   !contactNumber
     ? (contactNumberQuery = {})
@@ -58,22 +66,32 @@ const getGrandParentsBySessionData = async (
         contactNumber: contactNumber
       });
 
+  console.log('contact: ', contactNumberQuery);
+
   !grandParentName
     ? (nameQuery = {})
     : (nameQuery = {
         firstname: grandParentName
       });
 
+  console.log('GP name: ', nameQuery);
+
   !selectedPictures.length
-    ? (selectedPicturesQuery = {})
+    ? (selectedPicturesQuery = {
+        picture: {
+          [Op.notIn]: unselectedPictures
+        }
+      })
     : (selectedPicturesQuery = {
-        pictures: {
+        picture: {
           [Op.and]: [
             { [Op.in]: selectedPictures },
             { [Op.notIn]: unselectedPictures }
           ]
         }
       });
+
+  console.log('Picture: ', selectedPicturesQuery);
 
   return db.grandParent
     .findAll({

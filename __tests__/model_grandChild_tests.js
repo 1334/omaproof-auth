@@ -3,8 +3,7 @@ const grandChildSeeder = require('../testSeeders/grandChildren');
 const grandParentSeeder = require('../testSeeders/grandParents');
 const relationSeeder = require('../testSeeders/relations');
 const {
-  getGrandChildrenBySessionData,
-  getGrandChildrenByGPId
+  getGrandChildrenBySessionData
 } = require('../src/db/models/grandChild');
 
 describe('testing the database models: grandChild', () => {
@@ -12,13 +11,11 @@ describe('testing the database models: grandChild', () => {
     await relationSeeder.down(db.sequelize.queryInterface);
     await grandChildSeeder.down(db.sequelize.queryInterface);
     await grandParentSeeder.down(db.sequelize.queryInterface);
-  });
-  beforeEach(async () => {
     await grandChildSeeder.upChildrenTest(db.sequelize.queryInterface);
     await grandParentSeeder.upChildrenTest(db.sequelize.queryInterface);
     await relationSeeder.upChildrenTest(db.sequelize.queryInterface);
   });
-  afterEach(async () => {
+  afterAll(async () => {
     await relationSeeder.down(db.sequelize.queryInterface);
     await grandChildSeeder.down(db.sequelize.queryInterface);
     await grandParentSeeder.down(db.sequelize.queryInterface);
@@ -97,7 +94,3 @@ describe('testing the database models: grandChild', () => {
     expect(result.length).toEqual(2);
   });
 });
-
-describe('adding new user auth', () => {});
-
-describe('running the auth process', () => {});
