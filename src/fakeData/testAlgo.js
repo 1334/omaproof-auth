@@ -1,6 +1,7 @@
 const db = require('../db/schemas');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const uuidv4 = require('uuid/v4');
 
 // Steps
 
@@ -18,16 +19,10 @@ const Op = Sequelize.Op;
  * 
  * @param {*} data 
  */
-const dbQuery = async data => {
-  const {
-    selectedNames,
-    unselectedNames,
-    selectedUri,
-    unselectedUri,
-    selectedMonths
-  } = data;
 
-  let selectedNamesQuery, selectedPictureQuery, selectedMonthQuery;
+const dbQuery = async data => {
+  const { selectedNames, unselectedNames, selectedMonths, monthOfBirth } = data;
+  let selectedNamesQuery, selectedMonthQuery, selectedMonthOfBirth;
 
   !selectedNames.length
     ? (selectedNamesQuery = {
@@ -43,17 +38,6 @@ const dbQuery = async data => {
           ]
         }
       });
-  !selectedUri.length
-    ? (selectedPictureQuery = {
-        picture: {
-          [Op.notIn]: unselectedUri
-        }
-      })
-    : (selectedPictureQuery = {
-        picture: {
-          [Op.and]: [{ [Op.in]: selectedUri }, { [Op.notIn]: unselectedUri }]
-        }
-      });
 
   selectedMonthQuery = {
     monthOfBirth: {
@@ -61,56 +45,28 @@ const dbQuery = async data => {
     }
   };
 
-  const query_result1 = await db.grandParent.findAll({
-    include: [
-      {
-        association: 'children',
-        where: {
-          [Op.and]: [
-            selectedNamesQuery,
-            selectedPictureQuery,
-            selectedMonthQuery
-          ]
+  !monthOfBirth
+    ? (selectedMonthOfBirth = {})
+    : (selectedMonthOfBirth = {
+        monthOfBirth: monthOfBirth
+      });
+
+  return db.grandParent
+    .findAll({
+      where: selectedMonthOfBirth,
+      include: [
+        {
+          association: 'children',
+          where: {
+            [Op.and]: [selectedNamesQuery, selectedMonthQuery]
+          },
+          attributes: []
         }
-      }
-    ]
-  });
-  return query_result1;
+      ],
+      attributes: ['userId']
+    })
+    .map(el => el.get({ plain: true }));
 };
-
-// const dbChildQuery = async GPIDarr => {
-//   const query_result1 = await db.grandChild.findAll({
-//     include: [
-//       {
-//         association: 'parents',
-//         where: {
-//           id: {
-//             [Op.in]: GPIDarr
-//           }
-//         }
-//       }
-//     ]
-//   });
-//   return query_result1;
-// };
-
-const test = async () => {
-  const MockData = {
-    selectedNames: [],
-    unselectedNames: ['Eloisa'],
-    selectedUri: [],
-    unselectedUri: [],
-    selectedMonths: [8]
-  };
-  const result = await dbQuery(MockData);
-  // eslint-disable-next-line no-console
-  console.log(result.length);
-  const result2 = await getChildrenForQuiz([1]);
-  // eslint-disable-next-line no-console
-  console.log(result2.map(el => el.get({ plain: true })));
-};
-
-test();
 
 const getChildrenForQuiz = async (remainingGPIDs, amount = 8, limit = 300) => {
   let names = [];
@@ -128,9 +84,6 @@ const getChildrenForQuiz = async (remainingGPIDs, amount = 8, limit = 300) => {
     ],
     limit: limit
   });
-
-  // random selection
-
   while (names.length <= amount) {
     let sel = Math.round(Math.random() * (query_result1.length - 1));
     let selected = query_result1[sel];
@@ -141,3 +94,160 @@ const getChildrenForQuiz = async (remainingGPIDs, amount = 8, limit = 300) => {
   }
   return result;
 };
+
+// Request for login;
+
+const firstQuery = async () => {
+  const token = uuidv4();
+  const IDs = await db.grandParent.findAll({
+    attributes: ['userId']
+  });
+  const data = {
+    selectedNames: [],
+    unselectedNames: [],
+    selectedMonths: []
+  };
+  await db.session.create({
+    id: token,
+    data: JSON.stringify(data)
+  });
+  const selectedIDs = [...new Array(10)].map(
+    () => IDs[Math.round(Math.random() * (IDs.length - 1))]['userId']
+  );
+  let grandChildren = await retrieveGrandChildren(selectedIDs, 8);
+  return {
+    token: token,
+    data: data,
+    question: grandChildren
+  };
+};
+
+const testDrive = async id => {
+  let counter = 0;
+  const data = {
+    selectedNames: [],
+    unselectedNames: [],
+    selectedMonths: [],
+    monthOfBirth: null
+  };
+  let testGrandParent = await db.grandParent
+    .findAll({
+      where: {
+        id: id
+      },
+      include: [
+        {
+          association: 'children'
+        }
+      ]
+    })
+    .map(el => el.get({ plain: true }));
+  testGrandParent = testGrandParent[0];
+  //Follow the process as it would be done by client;
+  // Fill in the months where your G-kids are born;
+  data.selectedMonths = [
+    ...new Set(testGrandParent.children.map(el => el.monthOfBirth))
+  ];
+  const kids = testGrandParent.children.map(el => el.firstname);
+  // Select your own month
+  data.monthOfBirth = testGrandParent.monthOfBirth;
+
+  let GPIDs = await dbQuery(data);
+  GPIDs = GPIDs.map(el => el.userId);
+
+  while (GPIDs.length >= 3 && counter <= 25) {
+    // Using the remaining GPIDs draw a selection of names to choose from
+    let drawnNames = await drawNames(GPIDs, data);
+    // Client responds based on these names
+    drawnNames.forEach(el => {
+      const name = el.firstname;
+      kids.indexOf(name) < 0
+        ? data.unselectedNames.push(name)
+        : data.selectedNames.push(name);
+    });
+    // Using the additional data get remaining GPIDs
+    GPIDs = await dbQuery(data);
+    GPIDs = GPIDs.map(el => el.userId);
+    counter++;
+  }
+  return counter;
+};
+
+const drawNames = async (IDs, data) => {
+  const { selectedNames, unselectedNames, selectedMonths } = data;
+  let unselectedNamesQuery, selectedMonthQuery;
+  !unselectedNames.length
+    ? (unselectedNamesQuery = {})
+    : (unselectedNamesQuery = {
+        firstname: { [Op.notIn]: unselectedNames }
+      });
+
+  !selectedMonths.length
+    ? (selectedMonthQuery = {})
+    : (selectedMonthQuery = {
+        monthOfBirth: { [Op.in]: selectedMonths }
+      });
+
+  const result = await db.grandChild.findAll({
+    where: {
+      [Op.and]: [unselectedNamesQuery, selectedMonthQuery]
+    },
+    include: [
+      {
+        association: 'parents',
+        where: {
+          userId: {
+            [Op.in]: IDs
+          }
+        },
+        attributes: []
+      }
+    ],
+    limit: 100,
+    attributes: ['firstname']
+  });
+
+  let queriedNames = new Set(
+    result.map(el => el.get({ plain: true }).firstname)
+  );
+  let testedNames = new Set([...selectedNames, ...unselectedNames]);
+  let remainingNames = [...difference(testedNames, queriedNames)];
+  let draw = _randomNumberGenerator(0, remainingNames.length - 1, 8);
+  console.log('remaining names length: ', remainingNames.length);
+  console.log('draw: ', draw);
+  return draw.map(el => remainingNames[el]);
+};
+
+const difference = (setA, setB) => {
+  var _difference = new Set(setA);
+  for (var elem of setB) {
+    _difference.delete(elem);
+  }
+  return _difference;
+};
+
+const analysis = async () => {
+  let result = [];
+  for (let i = 99; i < 100; i++) {
+    const test = await testDrive(i);
+    result.push({ i, counter: test });
+  }
+  console.log(result);
+};
+
+const _randomNumberGenerator = (min, max, amount, recurring = false) => {
+  const draw = [];
+  if (recurring) {
+    while (draw.length < amount) {
+      draw.push(min + Math.round(Math.random() * (max - min)));
+    }
+  } else {
+    while (draw.length < amount) {
+      let num = min + Math.round(Math.random() * (max - min));
+      if (draw.indexOf(num) < 0) draw.push(num);
+    }
+  }
+  return draw;
+};
+
+analysis();
