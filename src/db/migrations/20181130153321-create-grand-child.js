@@ -11,8 +11,12 @@ module.exports = {
       firstname: {
         type: Sequelize.STRING
       },
-      dateOfBirth: {
-        type: Sequelize.DATE
+      yearOfBirth: {
+        type: Sequelize.INTEGER,
+        validate: {
+          min: 1900,
+          max: 2100
+        }
       },
       monthOfBirth: {
         type: Sequelize.INTEGER,

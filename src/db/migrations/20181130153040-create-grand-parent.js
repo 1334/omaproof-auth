@@ -9,13 +9,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userId: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
       firstname: {
         type: Sequelize.STRING
-      },
-      dateOfBirth: {
-        type: Sequelize.DATE
       },
       password: {
         type: Sequelize.STRING,
@@ -24,6 +23,13 @@ module.exports = {
       contactNumber: {
         type: Sequelize.STRING,
         allowNull: false
+      },
+      yearOfBirth: {
+        type: Sequelize.INTEGER,
+        validate: {
+          min: 1900,
+          max: 2100
+        }
       },
       monthOfBirth: {
         type: Sequelize.INTEGER,

@@ -4,9 +4,15 @@ module.exports = (sequelize, DataTypes) => {
     'grandChild',
     {
       firstname: DataTypes.STRING,
-      dateOfBirth: DataTypes.DATE,
       picture: DataTypes.STRING,
       userId: DataTypes.STRING,
+      yearOfBirth: {
+        type: DataTypes.INTEGER,
+        validate: {
+          min: 1900,
+          max: 2100
+        }
+      },
       monthOfBirth: {
         type: DataTypes.INTEGER,
         validate: {

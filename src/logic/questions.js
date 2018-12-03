@@ -72,7 +72,11 @@ const selectGrandParentName = async sessionData => {
   };
 };
 
-const selectNamesOfChildrenSelection = async (IDs, sessionData, amount) => {
+const selectNamesOfChildrenSelection = async (
+  IDs,
+  sessionData,
+  amount = 12
+) => {
   const query = await getGrandChildrenBySessionData(IDs, sessionData, [
     'firstname'
   ]);

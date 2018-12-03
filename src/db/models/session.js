@@ -1,5 +1,4 @@
 const db = require('../schemas');
-const Sequelize = require('sequelize');
 
 const retrieveSession = async token => {
   return db.session
@@ -11,7 +10,7 @@ const retrieveSession = async token => {
 
 const findOrCreateSession = async (token, data) => {
   return db.session
-    .findorCreate({
+    .findOrCreate({
       where: {
         id: token
       }

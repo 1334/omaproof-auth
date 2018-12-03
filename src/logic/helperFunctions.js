@@ -13,15 +13,6 @@ const randomNumberGenerator = (min, max, amount, recurring = false) => {
   return draw;
 };
 
-const difference = (setA, setB) => {
-  var _difference = new Set(setA);
-  for (var elem of setB) {
-    _difference.delete(elem);
-  }
-  return _difference;
-};
-
 module.exports = {
-  randomNumberGenerator,
-  difference
+  randomNumberGenerator
 };
