@@ -33,7 +33,7 @@ const selectContactNumber = async () => {
   };
 };
 
-const selectPictures = async IDs => {
+const selectPictures = async (IDs, amount = 12) => {
   let pictures = [];
   // for each ID select 1 picture
   for (let i = 0; i < IDs.length; i++) {
@@ -43,17 +43,17 @@ const selectPictures = async IDs => {
     retrievedPictures = retrievedPictures.map(el => el.picture);
     pictures = [...pictures, ...retrievedPictures];
   }
+  const sublength = amount - pictures.length;
   // for the remaining pictures, select randomly from not these IDS
-  let randomIDs = getAllGrandParentsExceptIDs(IDs, ['userId']);
+  let randomIDs = await getAllGrandParentsExceptIDs(IDs, ['userId']);
   let draw = randomNumberGenerator(
     0,
     randomIDs.length - 1,
-    12 - pictures.length
+    amount - pictures.length
   );
-  for (let i = 0; i < 12 - pictures.length; i++) {
-    let retrievedPictures = await getGrandChildrenByGPId(randomIDs[draw], 1, [
-      'picture'
-    ]);
+  for (let i = 0; i < sublength; i++) {
+    const ID = randomIDs[draw[i]].userId;
+    let retrievedPictures = await getGrandChildrenByGPId(ID, 1, ['picture']);
     retrievedPictures = retrievedPictures.map(el => el.picture);
     pictures = [...pictures, ...retrievedPictures];
   }
