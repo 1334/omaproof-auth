@@ -1,4 +1,3 @@
-const db = require('../src/db/schemas');
 const {
   getGrandParentsBySessionData
 } = require('../src/db/models/grandParent');
