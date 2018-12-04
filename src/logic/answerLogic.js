@@ -33,10 +33,7 @@ const handleAnswer = (answer, sessionData) => {
       }
       break;
     case 'GrandParent_ContactNumber':
-      if (
-        _isSingleSelection(answer) &&
-        typeof answer.selected[0] === 'string'
-      ) {
+      if (_isSingleSelection(answer) && _isConsistentType(answer, 'string')) {
         sessionData.contactNumber = answer.selected[0];
         return sessionData;
       }
@@ -57,11 +54,11 @@ const handleAnswer = (answer, sessionData) => {
       break;
     case 'Select_right_familymember':
       if (_isSingleSelection(answer) && _isConsistentType(answer, 'string')) {
+        sessionData.selectedName = answer.selected[0];
         return sessionData;
-        // here the success should be send
       }
   }
-  throw new Error('Invalid');
+  throw new Error('Invalid handling answer');
 };
 
 const _isConsistentLength = (answer, length) => {

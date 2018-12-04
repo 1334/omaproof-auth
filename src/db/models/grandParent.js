@@ -1,4 +1,4 @@
-const db = require('../db/schemas');
+const db = require('../schemas');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -65,9 +65,13 @@ const getGrandParentsBySessionData = async (
       });
 
   !selectedPictures.length
-    ? (selectedPicturesQuery = {})
+    ? (selectedPicturesQuery = {
+        picture: {
+          [Op.notIn]: unselectedPictures
+        }
+      })
     : (selectedPicturesQuery = {
-        pictures: {
+        picture: {
           [Op.and]: [
             { [Op.in]: selectedPictures },
             { [Op.notIn]: unselectedPictures }

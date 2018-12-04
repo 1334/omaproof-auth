@@ -20,7 +20,12 @@ const getGrandChildrenByGPId = async (userId, amount, attributes) => {
     .map(el => el.get({ plain: true }));
 };
 
-const getGrandChildrenBySessionData = (IDs, sessionData, attributes) => {
+const getGrandChildrenBySessionData = (
+  IDs,
+  sessionData,
+  attributes,
+  amount = 100
+) => {
   const { selectedNames, unselectedNames, selectedMonths } = sessionData;
   let queriedNames = [...selectedNames, ...unselectedNames];
   let queriedNamesQuery, selectedMonthQuery;
@@ -37,24 +42,26 @@ const getGrandChildrenBySessionData = (IDs, sessionData, attributes) => {
         monthOfBirth: { [Op.in]: selectedMonths }
       });
 
-  return db.grandChild.findAll({
-    where: {
-      [Op.and]: [queriedNamesQuery, selectedMonthQuery]
-    },
-    include: [
-      {
-        association: 'parents',
-        where: {
-          userId: {
-            [Op.in]: IDs
-          }
-        },
-        attributes: []
-      }
-    ],
-    limit: 100,
-    attributes: attributes
-  });
+  return db.grandChild
+    .findAll({
+      where: {
+        [Op.and]: [queriedNamesQuery, selectedMonthQuery]
+      },
+      include: [
+        {
+          association: 'parents',
+          where: {
+            userId: {
+              [Op.in]: IDs
+            }
+          },
+          attributes: []
+        }
+      ],
+      limit: amount,
+      attributes: attributes
+    })
+    .map(el => el.get({ plain: true }));
 };
 
 module.exports = {

@@ -1,14 +1,13 @@
 module.exports = {
-  up: queryInterface => {
+  upChildrenTest: queryInterface => {
     return queryInterface.bulkInsert(
-      'grandParents',
+      'grandChildren',
       [
         {
           id: 100,
-          firstname: 'Subject6',
-          userId: 6,
-          password: 'Subject6',
-          contactNumber: 'Subject6',
+          firstname: 'Subject1',
+          picture: 'Subject1',
+          userId: 1,
           yearOfBirth: 1990,
           monthOfBirth: 1,
           createdAt: new Date(),
@@ -16,10 +15,9 @@ module.exports = {
         },
         {
           id: 101,
-          firstname: 'Subject7',
-          userId: 7,
-          password: 'Subject7',
-          contactNumber: 'Subject7',
+          firstname: 'Subject2',
+          picture: 'Subject2',
+          userId: 2,
           yearOfBirth: 1991,
           monthOfBirth: 2,
           createdAt: new Date(),
@@ -27,10 +25,9 @@ module.exports = {
         },
         {
           id: 102,
-          firstname: 'Subject8',
-          userId: 8,
-          password: 'Subject9',
-          contactNumber: 'Subject9',
+          firstname: 'Subject3',
+          picture: 'Subject3',
+          userId: 3,
           yearOfBirth: 1990,
           monthOfBirth: 3,
           createdAt: new Date(),
@@ -38,10 +35,9 @@ module.exports = {
         },
         {
           id: 103,
-          firstname: 'Subject9',
-          userId: 9,
-          password: 'Subject9',
-          contactNumber: 'Subject9',
+          firstname: 'Subject4',
+          picture: 'Subject4',
+          userId: 4,
           yearOfBirth: 1991,
           monthOfBirth: 2,
           createdAt: new Date(),
@@ -53,6 +49,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.bulkDelete('grandParents', null, {});
+    return queryInterface.bulkDelete('grandChildren', null, {});
   }
 };

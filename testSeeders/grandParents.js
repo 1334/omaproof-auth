@@ -1,5 +1,5 @@
 module.exports = {
-  up: queryInterface => {
+  upChildrenTest: queryInterface => {
     return queryInterface.bulkInsert(
       'grandParents',
       [
