@@ -1,8 +1,9 @@
 // Flaws found:
 // - if nothing is specified in sessionData.selectedNames,
-// and it is an empty array, than it is not iterable
+// and it is an empty array, than it is not iterable -> throws error
 
 // - repeating names can be provided
+// - repeating urls can be provided
 
 const func = require('../src/logic/answerLogic');
 const handleAnswer = func.handleAnswer;
@@ -158,7 +159,7 @@ describe('verify Names of Grandchildren are provided consistently', () => {
 
     expect(() => handleAnswer(answer(), sessionData())).toThrowError();
   });
-
+  // fails the test as throws no error -> allows dublicate names...
   //   test('should throw an error if selected names are 11 in total, but some are not unique  ', () => {
   //     testVals.type = 'GrandChildren_Names';
   //     testVals.selected = ['Name1', 'Name2'];
@@ -296,20 +297,21 @@ describe('verify Picture URLs are provided consistently', () => {
 
     expect(() => handleAnswer(answer(), sessionData())).toThrowError();
   });
-
-  //   test('should throw an error if selected names are 11 in total, but some are not unique  ', () => {
+  // fails the test as throws no error -> allows dublicate urls...
+  //   test('should throw an error if selected names are 12 in total, but some are not unique  ', () => {
   //     testVals.type = 'GrandChildren_Authorization_Pictures';
   //     testVals.selected = ['URL-1', 'URL-2'];
   //     testVals.unselected = [
-  //       'Name10',
-  //       'Name10',
-  //       'Name10',
-  //       'Name10',
-  //       'Name10',
-  //       'Name10',
-  //       'Name10',
-  //       'Name10',
-  //       'Name10'
+  //       'URL-3',
+  //       'URL-4',
+  //       'URL-5',
+  //       'URL-6',
+  //       'URL-7',
+  //       'URL-8',
+  //       'URL-9',
+  //       'URL-10',
+  //       'URL-11',
+  //       'URL-11'
   //     ];
   //     testVals.selectedPictures = ['URL-0'];
   //     testVals.unselectedPictures = ['URL-12'];
@@ -317,7 +319,7 @@ describe('verify Picture URLs are provided consistently', () => {
   //     expect(() => handleAnswer(answer(), sessionData())).toThrowError();
   //   });
 
-  test('should add unselected Picture URLs to sessionData.unselectedPictures if Picture URLs are provided as strings and are 11 in total  ', () => {
+  test('should add unselected Picture URLs to sessionData.unselectedPictures if Picture URLs are provided as strings and are 12 in total  ', () => {
     testVals.type = 'GrandChildren_Authorization_Pictures';
     testVals.selected = ['URL-1', 'URL-2'];
     testVals.unselected = [
