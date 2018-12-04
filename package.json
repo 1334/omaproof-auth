@@ -9,7 +9,7 @@
     "lint": "eslint src/**/*.js --quiet",
     "test": "jest",
     "recreateDB": "sequelize db:drop && sequelize db:create && sequelize db:migrate",
-    "recreateDB-test": "export NODE_ENV=test && sequelize db:drop && sequelize db:create && sequelize db:migrate"
+    "recreateDB-test": "export NODE_ENV=test && sequelize db:drop && sequelize db:create && sequelize db:migrate && sequelize db:seed:all"
   },
   "author": "",
   "license": "ISC",

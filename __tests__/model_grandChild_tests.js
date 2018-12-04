@@ -1,26 +1,8 @@
-const db = require('../src/db/schemas');
-const grandChildSeeder = require('../testSeeders/grandChildren');
-const grandParentSeeder = require('../testSeeders/grandParents');
-const relationSeeder = require('../testSeeders/relations');
 const {
   getGrandChildrenBySessionData
 } = require('../src/db/models/grandChild');
 
 describe('testing the database models: grandChild', () => {
-  beforeAll(async () => {
-    await relationSeeder.down(db.sequelize.queryInterface);
-    await grandChildSeeder.down(db.sequelize.queryInterface);
-    await grandParentSeeder.down(db.sequelize.queryInterface);
-    await grandChildSeeder.upChildrenTest(db.sequelize.queryInterface);
-    await grandParentSeeder.upChildrenTest(db.sequelize.queryInterface);
-    await relationSeeder.upChildrenTest(db.sequelize.queryInterface);
-  });
-  afterAll(async () => {
-    await relationSeeder.down(db.sequelize.queryInterface);
-    await grandChildSeeder.down(db.sequelize.queryInterface);
-    await grandParentSeeder.down(db.sequelize.queryInterface);
-  });
-
   const Mock_IDs = ['6', '7', '8', '9'];
   const Mock_invalid_session = {};
   const Mock_valid_empty_session = {

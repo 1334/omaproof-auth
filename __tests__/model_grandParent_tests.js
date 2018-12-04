@@ -1,26 +1,9 @@
 const db = require('../src/db/schemas');
-const grandChildSeeder = require('../testSeeders/grandChildren');
-const grandParentSeeder = require('../testSeeders/grandParents');
-const relationSeeder = require('../testSeeders/relations');
 const {
   getGrandParentsBySessionData
 } = require('../src/db/models/grandParent');
 
 describe('testing the database models: grandParent', () => {
-  beforeAll(async () => {
-    await relationSeeder.down(db.sequelize.queryInterface);
-    await grandChildSeeder.down(db.sequelize.queryInterface);
-    await grandParentSeeder.down(db.sequelize.queryInterface);
-    await grandChildSeeder.upChildrenTest(db.sequelize.queryInterface);
-    await grandParentSeeder.upChildrenTest(db.sequelize.queryInterface);
-    await relationSeeder.upChildrenTest(db.sequelize.queryInterface);
-  });
-  afterAll(async () => {
-    await relationSeeder.down(db.sequelize.queryInterface);
-    await grandChildSeeder.down(db.sequelize.queryInterface);
-    await grandParentSeeder.down(db.sequelize.queryInterface);
-  });
-
   const Mock_session = {
     selectedNames: [],
     unselectedNames: [],
@@ -49,12 +32,6 @@ describe('testing the database models: grandParent', () => {
     ...Mock_session,
     unselectedPictures: ['Subject1']
   };
-
-  it('should throw an error if no sessionData provided', async () => {
-    expect(() => {
-      getGrandParentsBySessionData({});
-    }).toThrow();
-  });
 
   it('should return all grandParents if no names or months have been selected', async () => {
     const result = await getGrandParentsBySessionData(Mock_session);
@@ -98,6 +75,6 @@ describe('testing the database models: grandParent', () => {
 
   it('should return the right grandParents if unselectedPictures passed', async () => {
     const result = await getGrandParentsBySessionData(Mock_unselectedPictures);
-    expect(result.length).toEqual(2);
+    expect(result.length).toEqual(3);
   });
 });
