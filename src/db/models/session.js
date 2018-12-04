@@ -1,11 +1,10 @@
 const db = require('../schemas');
 
 const retrieveSession = async token => {
-  return db.session
-    .findOne({
-      where: { id: token }
-    })
-    .get({ plain: true });
+  const result = await db.session.findOne({
+    where: { id: token }
+  });
+  return result.get({ plain: true });
 };
 
 const findOrCreateSession = async (token, data) => {
@@ -17,6 +16,7 @@ const findOrCreateSession = async (token, data) => {
     })
     .spread(session => {
       session.data = JSON.stringify(data);
+      return session;
     })
     .then(session => session.save());
 };

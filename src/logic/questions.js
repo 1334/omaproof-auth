@@ -7,7 +7,7 @@ const {
   getGrandParentsBySessionData
 } = require('../db/models/grandParent');
 const { randomNumberGenerator } = require('./helperFunctions');
-
+const faker = require('faker');
 /**
  * Generate the questions to the front-end
  */
@@ -33,7 +33,7 @@ const selectContactNumber = async () => {
   };
 };
 
-const selectPictures = async (IDs, amount = 12) => {
+const selectPictures = async (IDs, sessionData, amount = 12) => {
   let pictures = [];
   // for each ID select 1 picture
   for (let i = 0; i < IDs.length; i++) {
@@ -46,13 +46,8 @@ const selectPictures = async (IDs, amount = 12) => {
   const sublength = amount - pictures.length;
   // for the remaining pictures, select randomly from not these IDS
   let randomIDs = await getAllGrandParentsExceptIDs(IDs, ['userId']);
-  let draw = randomNumberGenerator(
-    0,
-    randomIDs.length - 1,
-    amount - pictures.length
-  );
   for (let i = 0; i < sublength; i++) {
-    const ID = randomIDs[draw[i]].userId;
+    const ID = randomIDs[i].userId;
     let retrievedPictures = await getGrandChildrenByGPId(ID, 1, ['picture']);
     retrievedPictures = retrievedPictures.map(el => el.picture);
     pictures = [...pictures, ...retrievedPictures];
@@ -82,8 +77,16 @@ const selectNamesOfChildrenSelection = async (
   ]);
   let queriedNames = new Set(query.map(el => el.firstname));
   queriedNames = [...queriedNames];
-  let draw = randomNumberGenerator(0, queriedNames.length - 1, amount);
+  let draw = randomNumberGenerator(
+    0,
+    queriedNames.length - 1,
+    Math.min(amount, queriedNames.length - 1)
+  );
   const drawnNames = draw.map(number => queriedNames[number]);
+  const subResult = drawnNames.length;
+  for (let i = subResult; i < 12; i++) {
+    drawnNames.push(faker.name.firstName());
+  }
   return {
     options: drawnNames,
     type: 'GrandChildren_Names'

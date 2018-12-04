@@ -3,21 +3,20 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 const getGrandChildrenByGPId = async (userId, amount, attributes) => {
-  return db.grandChild
-    .findAll({
-      include: [
-        {
-          association: 'parents',
-          where: {
-            userId: userId
-          },
-          attributes: []
-        }
-      ],
-      limit: amount,
-      attributes: attributes
-    })
-    .map(el => el.get({ plain: true }));
+  const result = await db.grandChild.findAll({
+    include: [
+      {
+        association: 'parents',
+        where: {
+          userId: userId
+        },
+        attributes: []
+      }
+    ],
+    limit: amount,
+    attributes: attributes
+  });
+  return result.map(el => el.get({ plain: true }));
 };
 
 const getGrandChildrenBySessionData = (
@@ -61,7 +60,7 @@ const getGrandChildrenBySessionData = (
       limit: amount,
       attributes: attributes
     })
-    .map(el => el.get({ plain: true }));
+    .then(result => result.map(el => el.get({ plain: true })));
 };
 
 module.exports = {
