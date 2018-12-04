@@ -1,18 +1,15 @@
 const { getGrandParentsBySessionData } = require('../db/models/grandParent');
-const {
-  monthOfBirthSelection,
-  selectMonthsOfChildrenSelection,
-  selectContactNumber,
-  selectPictures,
-  selectGrandParentName,
-  selectNamesOfChildrenSelection
-} = require('./questions');
+const questionsFuncs = require('./questions');
 
 /**
  * Logic behind taking posing the right question at the right time
  */
 
-const questionProtocol = async sessionData => {
+const questionProtocol = async (
+  sessionData,
+  questions = questionsFuncs,
+  getGrandParents = getGrandParentsBySessionData
+) => {
   const {
     selectedMonths,
     monthOfBirth,
@@ -21,26 +18,36 @@ const questionProtocol = async sessionData => {
     isGrandParentNameSelection,
     isPictures
   } = sessionData;
+
+  const {
+    monthOfBirthSelection,
+    selectMonthsOfChildrenSelection,
+    selectContactNumber,
+    selectPictures,
+    selectGrandParentName,
+    selectNamesOfChildrenSelection
+  } = questions;
+
   let steps = progress.length;
   // Start with selecting a month of birth
-  if (!monthOfBirth) return monthOfBirthSelection;
+  if (!monthOfBirth) return monthOfBirthSelection();
   // Select the months of birth of the children
-  if (!selectedMonths.length) return selectMonthsOfChildrenSelection;
+  if (!selectedMonths.length) return selectMonthsOfChildrenSelection();
   // From here onwards we consult the database
 
   // Check the remaining grandparent given the data
-  const IDs = await getGrandParentsBySessionData(sessionData, ['userId']);
+  const IDs = await getGrandParents(sessionData, ['userId']);
   sessionData.progress.push(IDs);
 
   if (isNames) {
     if (IDs.length <= 8 || steps === 6) {
       sessionData.isNames = false;
     }
-    return selectNamesOfChildrenSelection;
+    return selectNamesOfChildrenSelection(IDs, sessionData);
   }
   // family can have 8 grandparents, who have the same grandkids and can be born in the same month (theoretically)
   // from that moment have them check the pictures
-  if (IDs.length > 8) return selectContactNumber;
+  if (IDs.length > 8) return selectContactNumber();
 
   if (isPictures) {
     sessionData.isPictures = false;
