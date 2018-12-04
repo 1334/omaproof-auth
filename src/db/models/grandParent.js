@@ -1,4 +1,4 @@
-const db = require('../db/schemas');
+const db = require('../schemas');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
