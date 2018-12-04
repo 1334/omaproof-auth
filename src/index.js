@@ -17,18 +17,16 @@ amqp.connect(
         const { token, answer } = received;
         let response = await authenticationProcess(token, answer);
         response = JSON.stringify(response);
-
         ch.sendToQueue(msg.properties.replyTo, Buffer.from(response, 'utf8'), {
           correlationId: msg.properties.correlationId
         });
         ch.ack(msg);
       });
-    });
-    conn.createChannel(function(err, ch) {
-      var q = 'createGroup';
-      ch.assertQueue(q, { durable: false });
+
+      var p = 'createGroup';
+      ch.assertQueue(p, { durable: false });
       ch.consume(
-        q,
+        p,
         function(msg) {
           _dumpData(JSON.parse(msg.content.toString()));
         },
@@ -49,8 +47,6 @@ const _dumpData = async receivedPackage => {
       return createGrandParent(el);
     })
   );
-  console.log('kidS: ', kids);
-  console.log('GPS: ', GPs);
   GPs.forEach(GP => {
     kids.forEach(kid => {
       createRelation(kid.id, GP.id);
