@@ -1,16 +1,27 @@
-require('dotenv').config();
-const express = require('express');
-const bodyParser = express.json();
-const cors = require('cors');
-const router = require('./router.js');
-const app = new express();
+var amqp = require('amqplib/callback_api');
 
-app
-  .use(cors())
-  .use(bodyParser)
-  .use(router)
-  .use((req, res) => {
-    res.status(404).send(`Nothing to see here. ${req.path} not found!`);
-  });
+amqp.connect(
+  'amqp://localhost',
+  function(err, conn) {
+    conn.createChannel(function(err, ch) {
+      var q = 'rpc_queue';
+      ch.assertQueue(q, { durable: false });
+      ch.prefetch(1);
+      ch.consume(q, function reply(msg) {
+        let received = JSON.parse(msg.content.toString());
 
-module.exports = app;
+        let response = JSON.stringify({
+          token: 'hello',
+          question: {
+            options: ['ai'],
+            type: 'test'
+          }
+        });
+        ch.sendToQueue(msg.properties.replyTo, Buffer.from(response, 'utf8'), {
+          correlationId: msg.properties.correlationId
+        });
+        ch.ack(msg);
+      });
+    });
+  }
+);
