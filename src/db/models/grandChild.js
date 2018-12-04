@@ -2,6 +2,14 @@ const db = require('../schemas');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
+const createGrandChild = async data => {
+  return db.grandChild
+    .create({
+      ...data
+    })
+    .then(el => el.get({ plain: true }));
+};
+
 const getGrandChildrenByGPId = async (userId, amount, attributes) => {
   const result = await db.grandChild.findAll({
     include: [
@@ -65,5 +73,6 @@ const getGrandChildrenBySessionData = (
 
 module.exports = {
   getGrandChildrenBySessionData,
-  getGrandChildrenByGPId
+  getGrandChildrenByGPId,
+  createGrandChild
 };

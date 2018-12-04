@@ -14,7 +14,6 @@ const createGrandMother = async () => {
   grandMa.data.monthOfBirth = 1 + Math.round(Math.random() * 11);
   grandMa.data.yearOfBirth = 1938 + Math.round(Math.random() * 30);
   grandMa.data.firstname = faker.name.firstName();
-  grandMa.data.password = grandMa.data.firstname;
   grandMa.data.contactNumber = `+32 00 ${userId}`;
   userId++;
   const amount_grandChildren = 1 + Math.round(Math.random() * 9);

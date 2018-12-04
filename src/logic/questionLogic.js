@@ -53,8 +53,6 @@ const questionProtocol = async (
     return selectGrandParentName(sessionData, IDs);
   }
 
-  console.log('IDs: ', IDs, ' progress: ', sessionData.progress);
-
   if (IDs.length < 1)
     return {
       options: [],
