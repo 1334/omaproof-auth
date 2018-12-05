@@ -1,7 +1,7 @@
 const handleAnswer = (answer, sessionData) => {
   switch (answer.type) {
     case 'GrandParent_MonthOfBirth':
-      if (_isSingleSelection(answer) && _isConsistentType(answer, 'number')) {
+      if (_isSingleSelection(answer) && _isConsistentType(answer, 'string')) {
         sessionData.monthOfBirth = answer.selected[0];
         return sessionData;
       }
@@ -9,7 +9,7 @@ const handleAnswer = (answer, sessionData) => {
     case 'GrandChildren_MonthsOfBirth':
       if (
         _isConsistentLength(answer, 12) &&
-        _isConsistentType(answer, 'number')
+        _isConsistentType(answer, 'string')
       ) {
         sessionData.selectedMonths = answer.selected;
         return sessionData;

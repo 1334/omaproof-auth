@@ -11,8 +11,22 @@ const createGrandMother = async () => {
   };
   grandMa.data.userId = userId;
   // select a year between 50 and 80;
-  grandMa.data.monthOfBirth = 1 + Math.round(Math.random() * 11);
-  grandMa.data.yearOfBirth = 1938 + Math.round(Math.random() * 30);
+  const months = [
+    'jan',
+    'feb',
+    'mar',
+    'apr',
+    'may',
+    'jun',
+    'jul',
+    'aug',
+    'sep',
+    'oct',
+    'nov',
+    'dec'
+  ];
+  grandMa.data.monthOfBirth = months[Math.round(Math.random() * 11)];
+  grandMa.data.yearOfBirth = (1938 + Math.round(Math.random() * 30)).toString();
   grandMa.data.firstname = faker.name.firstName();
   grandMa.data.contactNumber = `+32 00 ${userId}`;
   userId++;
@@ -21,10 +35,10 @@ const createGrandMother = async () => {
   for (let i = 0; i < amount_grandChildren; i++) {
     const kid = {};
     kid.firstname = faker.name.firstName();
-    kid.monthOfBirth = 1 + Math.round(Math.random() * 11);
+    kid.monthOfBirth = months[Math.round(Math.random() * 11)];
     kid.userId = userId;
     kid.picture = `www.fakeurl.com/${userId}`;
-    kid.yearOfBirth = selectYear(grandMa.data.yearOfBirth);
+    kid.yearOfBirth = selectYear(grandMa.data.yearOfBirth).toString();
     userId++;
     grandMa.kids.push(kid);
   }
@@ -48,7 +62,7 @@ const createGrandMother = async () => {
 };
 
 const selectYear = old => {
-  return old + 36 + Math.round(Math.random() * (2017 - old - 36));
+  return +old + 36 + Math.round(Math.random() * (2017 - +old - 36));
 };
 
 const test = async x => {
@@ -57,4 +71,4 @@ const test = async x => {
   }
 };
 
-//test(500);
+test(500);

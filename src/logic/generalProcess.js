@@ -13,8 +13,12 @@ const authenticationProcess = async (token, answer) => {
   }
   question = await questionProtocol(sessionData);
   await findOrCreateSession(sessionToken, sessionData);
-  if (question.type === 'failure') console.log('error');
-
+  if (question.type === 'failure') {
+    console.log('failure: ', sessionData.progress); // eslint-disable-line
+  }
+  if (question.type === 'success') {
+    console.log('success: ', sessionData.progress); // eslint-disable-line
+  }
   return {
     sessionToken,
     question

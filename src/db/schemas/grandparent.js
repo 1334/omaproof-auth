@@ -8,18 +8,10 @@ module.exports = (sequelize, DataTypes) => {
       contactNumber: DataTypes.STRING,
       firstname: DataTypes.STRING,
       yearOfBirth: {
-        type: DataTypes.INTEGER,
-        validate: {
-          min: 1900,
-          max: 2100
-        }
+        type: DataTypes.STRING
       },
       monthOfBirth: {
-        type: DataTypes.INTEGER,
-        validate: {
-          min: 1,
-          max: 12
-        }
+        type: DataTypes.STRING
       }
     },
     {}

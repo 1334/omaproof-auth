@@ -60,7 +60,7 @@ const questionProtocol = async (
     };
 
   return {
-    options: [],
+    options: IDs,
     type: 'success'
   };
 };

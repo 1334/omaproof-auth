@@ -8,9 +8,6 @@ const { authenticationProcess } = require('../logic/generalProcess');
 const runAlgo = async id => {
   let counter = 0;
   const client = await getGrandParentByDatabaseId(id);
-  // eslint-disable-next-line no-console
-  //console.log(client);
-  // hit the end point:
   let query = await authenticationProcess();
   let { sessionToken, question } = query;
 
@@ -25,7 +22,8 @@ const runAlgo = async id => {
     question = query.question;
     counter++;
   }
-  console.log(client.firstname, 'type: ', question.type);
+
+  console.log('Id: ', id, ' name: ', client.firstname, 'type: ', question.type); // eslint-disable-line
 };
 
 const answerMachine = async (question, client) => {
@@ -38,7 +36,20 @@ const answerMachine = async (question, client) => {
         unselected: []
       };
     case 'GrandChildren_MonthsOfBirth':
-      standard = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+      standard = [
+        'jan',
+        'feb',
+        'mar',
+        'apr',
+        'may',
+        'jun',
+        'jul',
+        'aug',
+        'sep',
+        'oct',
+        'nov',
+        'dec'
+      ];
 
       childMonths = [...new Set(client.children.map(el => el.monthOfBirth))];
       return {

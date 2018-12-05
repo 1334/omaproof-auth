@@ -14,14 +14,40 @@ const faker = require('faker');
 
 const monthOfBirthSelection = () => {
   return {
-    options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    options: [
+      'jan',
+      'feb',
+      'mar',
+      'apr',
+      'may',
+      'jun',
+      'jul',
+      'aug',
+      'sep',
+      'oct',
+      'nov',
+      'dec'
+    ],
     type: 'GrandParent_MonthOfBirth'
   };
 };
 
 const selectMonthsOfChildrenSelection = () => {
   return {
-    options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    options: [
+      'jan',
+      'feb',
+      'mar',
+      'apr',
+      'may',
+      'jun',
+      'jul',
+      'aug',
+      'sep',
+      'oct',
+      'nov',
+      'dec'
+    ],
     type: 'GrandChildren_MonthsOfBirth'
   };
 };
