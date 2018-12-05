@@ -10,7 +10,6 @@ const runAlgo = async id => {
   const client = await getGrandParentByDatabaseId(id);
   let query = await authenticationProcess();
   let { sessionToken, question } = query;
-
   while (
     question.type !== 'success' &&
     question.type !== 'failure' &&
@@ -91,7 +90,7 @@ const testMotha = () => {
   setInterval(() => {
     id = Math.round(Math.random() * 500);
     runAlgo(id);
-  }, 500);
+  }, 2000);
 };
 
 testMotha();
