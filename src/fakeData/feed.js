@@ -65,10 +65,38 @@ const selectYear = old => {
   return +old + 36 + Math.round(Math.random() * (2017 - +old - 36));
 };
 
-const test = async x => {
+const feeder = async x => {
   for (let i = 0; i < x; i++) {
     createGrandMother();
   }
 };
 
-test(500);
+const pictureFeeder = async () => {
+  const { pictures } = require('./pictures.json');
+  let count = 0;
+  let picture = pictures[count].photo;
+  console.log(picture);
+  const max = pictures.length - 1;
+  const grandChildren = await db.grandChild.findAll({});
+  for (let i = 0; i < grandChildren.length; i++) {
+    let picture = pictures[count].photo;
+    await db.grandChild.update(
+      {
+        picture
+      },
+      {
+        where: {
+          id: grandChildren[i].id
+        }
+      }
+    );
+    count++;
+    if (count >= max) count = 0;
+  }
+  console.log(max);
+  console.log(grandChildren.length);
+};
+
+//feeder(500);
+
+//pictureFeeder();
