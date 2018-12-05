@@ -22,8 +22,6 @@ const runAlgo = async id => {
     question = query.question;
     counter++;
   }
-
-  console.log('Id: ', id, ' name: ', client.firstname, 'type: ', question.type); // eslint-disable-line
 };
 
 const answerMachine = async (question, client) => {
