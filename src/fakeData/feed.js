@@ -74,8 +74,6 @@ const feeder = async x => {
 const pictureFeeder = async () => {
   const { pictures } = require('./pictures.json');
   let count = 0;
-  let picture = pictures[count].photo;
-  console.log(picture);
   const max = pictures.length - 1;
   const grandChildren = await db.grandChild.findAll({});
   for (let i = 0; i < grandChildren.length; i++) {
@@ -93,8 +91,6 @@ const pictureFeeder = async () => {
     count++;
     if (count >= max) count = 0;
   }
-  console.log(max);
-  console.log(grandChildren.length);
 };
 
 //feeder(500);
