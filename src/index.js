@@ -26,7 +26,7 @@ amqp.connect(
             }
           );
         } catch (error) {
-          console.log(error);
+          console.log(error); // eslint-disable-line
         } finally {
           ch.ack(msg);
         }
@@ -49,7 +49,6 @@ amqp.connect(
 );
 
 const _dumpData = async receivedPackage => {
-  console.log('DataDump: ', receivedPackage);
   const kids = await Promise.all(
     receivedPackage.kids.map(el => {
       return createGrandChild(el);

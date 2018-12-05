@@ -114,7 +114,6 @@ const selectNamesOfChildrenSelection = async (
   for (let i = subResult; i < 12; i++) {
     drawnNames.push(faker.name.firstName());
   }
-  console.log(JSON.stringify(queriedNames));
 
   return {
     options: drawnNames,

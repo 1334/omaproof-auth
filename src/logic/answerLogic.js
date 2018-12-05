@@ -26,7 +26,6 @@ const handleAnswer = (answer, sessionData) => {
         sessionData.unselectedNames = [
           ...new Set([...sessionData.unselectedNames, ...answer.unselected])
         ];
-        console.log(sessionData.selectedNames);
         return sessionData;
       }
       break;

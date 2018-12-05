@@ -45,7 +45,6 @@ const questionProtocol = async (
   if (IDs.length > 8) return selectContactNumber();
 
   if (sessionData.progress.length < 4) {
-    console.log('hey');
     return selectNamesOfChildrenSelection(IDs, sessionData);
   }
 
