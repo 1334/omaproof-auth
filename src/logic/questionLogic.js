@@ -43,6 +43,12 @@ const questionProtocol = async (
   // family can have 8 grandparents, who have the same grandkids and can be born in the same month (theoretically)
   // from that moment have them check the pictures
   if (IDs.length > 8) return selectContactNumber();
+
+  if (sessionData.progress.length < 4) {
+    console.log('hey');
+    return selectNamesOfChildrenSelection(IDs, sessionData);
+  }
+
   if (sessionData.isPictures) {
     sessionData.isPictures = false;
     return selectPictures(IDs);

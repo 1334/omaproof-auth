@@ -36,8 +36,11 @@ amqp.connect(
       ch.assertQueue(p, { durable: false });
       ch.consume(
         p,
-        function(msg) {
-          _dumpData(JSON.parse(msg.content.toString()));
+        async msg => {
+          await _dumpData(JSON.parse(msg.content.toString())).catch(() =>
+            ch.ack(msg)
+          );
+          ch.ack(msg);
         },
         { noAck: false }
       );
@@ -46,6 +49,7 @@ amqp.connect(
 );
 
 const _dumpData = async receivedPackage => {
+  console.log('DataDump: ', receivedPackage);
   const kids = await Promise.all(
     receivedPackage.kids.map(el => {
       return createGrandChild(el);
@@ -56,9 +60,7 @@ const _dumpData = async receivedPackage => {
       return createGrandParent(el);
     })
   );
-  GPs.forEach(GP => {
-    kids.forEach(kid => {
-      createRelation(kid.id, GP.id);
-    });
-  });
+  await Promise.all(
+    GPs.map(GP => Promise.all(kids.map(kid => createRelation(kid.id, GP.id))))
+  );
 };

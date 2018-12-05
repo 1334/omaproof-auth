@@ -77,6 +77,7 @@ const selectPictures = async (IDs, sessionData, amount = 12) => {
     let retrievedPictures = await getGrandChildrenByGPId(ID, 1, ['picture']);
     retrievedPictures = retrievedPictures.map(el => el.picture);
     pictures = [...pictures, ...retrievedPictures];
+    pictures.sort(() => 0.5 - Math.random());
   }
   return {
     options: pictures,
@@ -113,6 +114,8 @@ const selectNamesOfChildrenSelection = async (
   for (let i = subResult; i < 12; i++) {
     drawnNames.push(faker.name.firstName());
   }
+  console.log(JSON.stringify(queriedNames));
+
   return {
     options: drawnNames,
     type: 'GrandChildren_Names'
