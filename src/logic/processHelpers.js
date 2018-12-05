@@ -4,10 +4,6 @@ const {
 } = require('../db/models/session');
 const uuidv4 = require('uuid/v4');
 
-const login = () => {
-  console.log('Logged In');
-};
-
 const getSession = async token => {
   let sessionData, sessionToken;
   if (!token) {
@@ -31,13 +27,12 @@ const getSession = async token => {
     await findOrCreateSession(sessionToken, sessionData);
   } else {
     const session = await retrieveSession(token);
-    sessionToken = session.token;
+    sessionToken = session.id;
     sessionData = JSON.parse(session.data);
   }
-  return [sessionToken, sessionData];
+  return { sessionToken, sessionData };
 };
 
 module.exports = {
-  login,
   getSession
 };

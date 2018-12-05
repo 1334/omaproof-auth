@@ -1,8 +1,7 @@
 const faker = require('faker');
-faker.locale = 'es';
 // Create fake data
 const db = require('../db/schemas');
-
+const fs = require('fs');
 let { userId } = require('./fakeNews.json');
 
 const createGrandMother = async () => {
@@ -13,25 +12,19 @@ const createGrandMother = async () => {
   grandMa.data.userId = userId;
   // select a year between 50 and 80;
   grandMa.data.monthOfBirth = 1 + Math.round(Math.random() * 11);
-  grandMa.data.dateOfBirth = new Date(
-    Date.UTC(
-      1938 + Math.round(Math.random() * 30),
-      grandMa.data.monthOfBirth,
-      1
-    )
-  );
+  grandMa.data.yearOfBirth = 1938 + Math.round(Math.random() * 30);
   grandMa.data.firstname = faker.name.firstName();
+  grandMa.data.contactNumber = `+32 00 ${userId}`;
   userId++;
-  const amount_grandChildren = 1 + Math.round(Math.random() * 7);
+  const amount_grandChildren = 1 + Math.round(Math.random() * 9);
+
   for (let i = 0; i < amount_grandChildren; i++) {
     const kid = {};
     kid.firstname = faker.name.firstName();
     kid.monthOfBirth = 1 + Math.round(Math.random() * 11);
     kid.userId = userId;
     kid.picture = `www.fakeurl.com/${userId}`;
-    kid.dateOfBirth = new Date(
-      Date.UTC(selectYear(grandMa.data.dateOfBirth), kid.monthOfBirth, 1)
-    );
+    kid.yearOfBirth = selectYear(grandMa.data.yearOfBirth);
     userId++;
     grandMa.kids.push(kid);
   }
@@ -41,6 +34,9 @@ const createGrandMother = async () => {
   const kids = await Promise.all(
     grandMa.kids.map(el => db.grandChild.create({ ...el }))
   );
+
+  fs.appendFile('TestData.txt', JSON.stringify(grandMa, null, 2), () => {});
+
   return Promise.all(
     kids.map(el => {
       db.relation.create({
@@ -51,8 +47,7 @@ const createGrandMother = async () => {
   );
 };
 
-const selectYear = oldDate => {
-  const old = oldDate.getFullYear();
+const selectYear = old => {
   return old + 36 + Math.round(Math.random() * (2017 - old - 36));
 };
 
@@ -62,4 +57,4 @@ const test = async x => {
   }
 };
 
-test(250);
+//test(500);

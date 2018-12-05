@@ -1,5 +1,5 @@
 const { findOrCreateSession } = require('../db/models/session');
-const { login, getSession } = require('./processHelpers');
+const { getSession } = require('./processHelpers');
 const { handleAnswer } = require('./answerLogic');
 const { questionProtocol } = require('./questionLogic');
 
@@ -7,14 +7,12 @@ const { questionProtocol } = require('./questionLogic');
 // the endpoint that we will hit
 const authenticationProcess = async (token, answer) => {
   let question;
-  let [sessionData, sessionToken] = getSession(token);
+  let { sessionToken, sessionData } = await getSession(token);
   if (answer) {
     sessionData = await handleAnswer(answer, sessionData);
   }
   question = await questionProtocol(sessionData);
   await findOrCreateSession(sessionToken, sessionData);
-
-  if (question.type === 'success') return login();
   if (question.type === 'failure') console.log('error');
 
   return {
