@@ -20,13 +20,11 @@ const getGrandParentsBySessionData = async (
 ) => {
   const {
     selectedNames,
-    unselectedNames,
     selectedMonths,
     monthOfBirth,
     contactNumber,
     grandParentName,
-    selectedPictures,
-    unselectedPictures
+    selectedPictures
   } = sessionData;
   let selectedNamesQuery,
     selectedMonthQuery,
@@ -35,20 +33,13 @@ const getGrandParentsBySessionData = async (
     contactNumberQuery,
     nameQuery;
 
-  !selectedNames.length
-    ? (selectedNamesQuery = {
-        firstname: {
-          [Op.notIn]: unselectedNames
-        }
-      })
-    : (selectedNamesQuery = {
-        firstname: {
-          [Op.and]: [
-            { [Op.in]: selectedNames },
-            { [Op.notIn]: unselectedNames }
-          ]
-        }
-      });
+  if (selectedNames.length) {
+    selectedNamesQuery = {
+      firstname: {
+        [Op.and]: [{ [Op.in]: selectedNames }]
+      }
+    };
+  }
 
   !selectedMonths.length
     ? (selectedMonthQuery = {})
@@ -81,10 +72,7 @@ const getGrandParentsBySessionData = async (
   if (selectedPictures.length) {
     selectedPicturesQuery = {
       picture: {
-        [Op.and]: [
-          { [Op.in]: selectedPictures },
-          { [Op.notIn]: unselectedPictures }
-        ]
+        [Op.and]: [{ [Op.in]: selectedPictures }]
       }
     };
     selectedNamesQuery = {};

@@ -14,14 +14,40 @@ const faker = require('faker');
 
 const monthOfBirthSelection = () => {
   return {
-    options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    options: [
+      'jan',
+      'feb',
+      'mar',
+      'apr',
+      'may',
+      'jun',
+      'jul',
+      'aug',
+      'sep',
+      'oct',
+      'nov',
+      'dec'
+    ],
     type: 'GrandParent_MonthOfBirth'
   };
 };
 
 const selectMonthsOfChildrenSelection = () => {
   return {
-    options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    options: [
+      'jan',
+      'feb',
+      'mar',
+      'apr',
+      'may',
+      'jun',
+      'jul',
+      'aug',
+      'sep',
+      'oct',
+      'nov',
+      'dec'
+    ],
     type: 'GrandChildren_MonthsOfBirth'
   };
 };
@@ -51,6 +77,7 @@ const selectPictures = async (IDs, sessionData, amount = 12) => {
     let retrievedPictures = await getGrandChildrenByGPId(ID, 1, ['picture']);
     retrievedPictures = retrievedPictures.map(el => el.picture);
     pictures = [...pictures, ...retrievedPictures];
+    pictures.sort(() => 0.5 - Math.random());
   }
   return {
     options: pictures,
@@ -87,6 +114,7 @@ const selectNamesOfChildrenSelection = async (
   for (let i = subResult; i < 12; i++) {
     drawnNames.push(faker.name.firstName());
   }
+
   return {
     options: drawnNames,
     type: 'GrandChildren_Names'

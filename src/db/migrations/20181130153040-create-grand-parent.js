@@ -14,7 +14,8 @@ module.exports = {
         unique: true
       },
       firstname: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       password: {
         type: Sequelize.STRING,
@@ -25,18 +26,12 @@ module.exports = {
         allowNull: false
       },
       yearOfBirth: {
-        type: Sequelize.INTEGER,
-        validate: {
-          min: 1900,
-          max: 2100
-        }
+        type: Sequelize.STRING,
+        allowNull: false
       },
       monthOfBirth: {
-        type: Sequelize.INTEGER,
-        validate: {
-          min: 1,
-          max: 12
-        }
+        type: Sequelize.STRING,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
