@@ -1,8 +1,12 @@
 const faker = require('faker');
-// Create fake data
 const db = require('../db/schemas');
 const fs = require('fs');
 let { userId } = require('./fakeNews.json');
+
+/**
+ * Script to feed database
+ *
+ */
 
 const createGrandMother = async () => {
   const grandMa = {
