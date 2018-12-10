@@ -1,9 +1,16 @@
 const {
-  getGrandChildrenBySessionData
+  getGrandChildrenBySessionData,
+  getGrandChildrenByGPId
 } = require('../src/db/models/grandChild');
 
-describe('testing the database models: grandChild', () => {
-  const Mock_IDs = ['6', '7', '8', '9'];
+describe('testing the database models: grandChild by sessiondata', () => {
+  const Mock_IDs = [
+    'grandMother1',
+    'grandMother2',
+    'grandMother3',
+    'grandMother4',
+    'grandMother5'
+  ];
   const Mock_invalid_session = {};
   const Mock_valid_empty_session = {
     selectedNames: [],
@@ -12,12 +19,12 @@ describe('testing the database models: grandChild', () => {
   };
   const Mock_month_session = {
     selectedNames: [],
-    selectedMonths: [2],
+    selectedMonths: ['apr'],
     unselectedNames: []
   };
 
   const Mock_name_session = {
-    selectedNames: ['Subject4'],
+    selectedNames: ['kid3'],
     selectedMonths: [],
     unselectedNames: []
   };
@@ -25,7 +32,7 @@ describe('testing the database models: grandChild', () => {
   const Mock_unname_session = {
     selectedNames: [],
     selectedMonths: [],
-    unselectedNames: ['Subject4', 'Subject2']
+    unselectedNames: ['kid3', 'kid2']
   };
 
   it('should throw an error if no sessionData provided', async () => {
@@ -46,7 +53,7 @@ describe('testing the database models: grandChild', () => {
       Mock_valid_empty_session,
       ['firstname']
     );
-    expect(result.length).toEqual(4);
+    expect(result.length).toEqual(5);
   });
 
   it('should return the right grandchildren if selectedMonths passed', async () => {
@@ -64,7 +71,7 @@ describe('testing the database models: grandChild', () => {
       Mock_name_session,
       ['firstname']
     );
-    expect(result.length).toEqual(3);
+    expect(result.length).toEqual(4);
   });
 
   it('should return the right grandchildren if unselectedNames passed', async () => {
@@ -73,6 +80,22 @@ describe('testing the database models: grandChild', () => {
       Mock_unname_session,
       ['firstname']
     );
+    expect(result.length).toEqual(3);
+  });
+});
+
+describe('testing the database models: grandChild by parent ID', () => {
+  it('should provide all grandchildren for grandparent id', async () => {
+    const result = await getGrandChildrenByGPId(['grandMother1'], 10, [
+      'firstname'
+    ]);
+    expect(result.length).toEqual(3);
+  });
+
+  it('should provide all grandchildren for grandparent id but no more than the amount', async () => {
+    const result = await getGrandChildrenByGPId(['grandMother1'], 2, [
+      'firstname'
+    ]);
     expect(result.length).toEqual(2);
   });
 });

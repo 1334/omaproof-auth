@@ -2,7 +2,7 @@ const {
   getGrandParentsBySessionData
 } = require('../src/db/models/grandParent');
 
-describe('testing the database models: grandParent', () => {
+xdescribe('testing the database models: grandParent', () => {
   const Mock_session = {
     selectedNames: [],
     unselectedNames: [],

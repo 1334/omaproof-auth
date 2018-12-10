@@ -49,6 +49,7 @@ amqp.connect(
 );
 
 const _dumpData = async receivedPackage => {
+  console.log('received package: ', receivedPackage);
   const kids = await Promise.all(
     receivedPackage.kids.map(el => {
       return createGrandChild(el);

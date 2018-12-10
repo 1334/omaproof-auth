@@ -5,9 +5,9 @@ const {
 } = require('../src/logic/questions');
 
 describe('testing the questions: selectPictures', () => {
-  const mock1 = ['6', '9'];
-  const mock2 = ['7'];
-  const mock3 = ['7', '8'];
+  const mock1 = ['grandMother1', 'grandMother2'];
+  const mock2 = ['grandMother3'];
+  const mock3 = ['grandMother4', 'grandMother5'];
 
   it('should return three pictures', async () => {
     const result = await selectPictures(mock1, 3);
@@ -16,7 +16,7 @@ describe('testing the questions: selectPictures', () => {
 
   it('One picture should be related to the IDs', async () => {
     const result = await selectPictures(mock1, 3);
-    expect(result.options).toContain('Subject1');
+    expect(result.options).toContain('kid1');
   });
 
   it('Should return 3 pictures', async () => {
@@ -26,14 +26,14 @@ describe('testing the questions: selectPictures', () => {
 
   it('Two pictures should be related to the IDs', async () => {
     const result = await selectPictures(mock3, 3);
-    expect(result.options).toContain('Subject2');
-    expect(result.options).toContain('Subject3');
+    expect(result.options).toContain('kid1');
+    expect(result.options).toContain('kid2');
   });
 });
 
 describe('testing the questions: selectGrandParentName', () => {
   const Mock_session1 = {
-    selectedNames: ['Subject1'],
+    selectedNames: ['kid1'],
     unselectedNames: [],
     selectedMonths: [],
     monthOfBirth: null,
@@ -49,15 +49,21 @@ describe('testing the questions: selectGrandParentName', () => {
 
   it('should return the following grandParent names', async () => {
     const result = await selectGrandParentName(Mock_session1);
-    expect(result.options).toContain('Subject6');
-    expect(result.options).toContain('Subject9');
+    expect(result.options).toContain('grandMother1');
+    expect(result.options).toContain('grandMother4');
   });
 });
 
 describe('testing the questions: selectNamesOfChildrenSelection', () => {
-  const IDs = ['6', '7', '8', '9'];
+  const IDs = [
+    'grandMother1',
+    'grandMother2',
+    'grandMother3',
+    'grandMother4',
+    'grandMother5'
+  ];
   const Mock_session1 = {
-    selectedNames: ['Subject1'],
+    selectedNames: ['kid4'],
     unselectedNames: [],
     selectedMonths: [],
     monthOfBirth: null,
@@ -69,7 +75,7 @@ describe('testing the questions: selectNamesOfChildrenSelection', () => {
 
   const Mock_session2 = {
     selectedNames: [],
-    unselectedNames: ['Subject1'],
+    unselectedNames: ['kid4'],
     selectedMonths: [],
     monthOfBirth: null,
     contactNumber: null,
@@ -83,17 +89,19 @@ describe('testing the questions: selectNamesOfChildrenSelection', () => {
   });
 
   it('should contain all names except for select names', async () => {
-    const result = await selectNamesOfChildrenSelection(IDs, Mock_session1, 3);
-    expect(result.options).toContain('Subject2');
-    expect(result.options).toContain('Subject3');
-    expect(result.options).toContain('Subject4');
+    const result = await selectNamesOfChildrenSelection(IDs, Mock_session1, 4);
+    expect(result.options).toContain('kid1');
+    expect(result.options).toContain('kid3');
+    expect(result.options).toContain('kid5');
+    expect(result.options).toContain('kid2');
   });
 
   it('should contain all names except for in unselected names', async () => {
-    const result = await selectNamesOfChildrenSelection(IDs, Mock_session2, 3);
-    expect(result.options).toContain('Subject2');
-    expect(result.options).toContain('Subject3');
-    expect(result.options).toContain('Subject4');
+    const result = await selectNamesOfChildrenSelection(IDs, Mock_session2, 4);
+    expect(result.options).toContain('kid1');
+    expect(result.options).toContain('kid3');
+    expect(result.options).toContain('kid5');
+    expect(result.options).toContain('kid2');
   });
 
   it('should not contain doubles', async () => {

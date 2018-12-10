@@ -59,7 +59,7 @@ const selectContactNumber = async () => {
   };
 };
 
-const selectPictures = async (IDs, sessionData, amount = 12) => {
+const selectPictures = async (IDs, amount = 12) => {
   let pictures = [];
   // for each ID select 1 picture
   for (let i = 0; i < IDs.length; i++) {
@@ -107,11 +107,12 @@ const selectNamesOfChildrenSelection = async (
   let draw = randomNumberGenerator(
     0,
     queriedNames.length - 1,
-    Math.min(amount, queriedNames.length - 1)
+    Math.min(amount, queriedNames.length)
   );
+
   const drawnNames = draw.map(number => queriedNames[number]);
   const subResult = drawnNames.length;
-  for (let i = subResult; i < 12; i++) {
+  for (let i = subResult; i < amount; i++) {
     drawnNames.push(faker.name.firstName());
   }
 

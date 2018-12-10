@@ -93,6 +93,6 @@ const pictureFeeder = async () => {
   }
 };
 
-feeder(500);
+//feeder(500);
 
 pictureFeeder();
