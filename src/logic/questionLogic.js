@@ -32,7 +32,7 @@ const questionProtocol = async (
   IDs = IDs.map(el => el.userId);
   sessionData.progress.push(IDs.length);
 
-  if (IDs.length <= 8 || steps === 6) {
+  if (IDs.length <= 8 || steps < 6) {
     sessionData.isNames = false;
   }
 
@@ -43,10 +43,6 @@ const questionProtocol = async (
   // family can have 8 grandparents, who have the same grandkids and can be born in the same month (theoretically)
   // from that moment have them check the pictures
   if (IDs.length > 8) return selectContactNumber();
-
-  if (sessionData.progress.length < 4) {
-    return selectNamesOfChildrenSelection(IDs, sessionData);
-  }
 
   if (sessionData.isPictures) {
     sessionData.isPictures = false;

@@ -1,4 +1,4 @@
-const { questionProtocol } = require('../questionLogic');
+const { questionProtocol } = require('../src/logic/questionLogic');
 
 describe('questionProtocol', () => {
   const questionsMock = {
@@ -18,7 +18,6 @@ describe('questionProtocol', () => {
   describe('when we have no month of birth', () => {
     it('returns monthOfBirthSelection function', async () => {
       const sessionData = getSessionData({ monthOfBirth: null });
-
       const result = await questionProtocol(sessionData, questionsMock);
       expect(questionsMock.monthOfBirthSelection).toHaveBeenCalledTimes(1);
       expect(questionsMock.monthOfBirthSelection).toHaveBeenCalledWith();
@@ -45,24 +44,25 @@ describe('questionProtocol', () => {
   });
 
   describe('when there are no names to select and less than 8 IDs', () => {
-    const getPBSD = jest.fn(() => [1, 2, 3]);
+    const getPBSD = jest.fn(() => [
+      { userId: 1 },
+      { userId: 2 },
+      { userId: 3 },
+      { userId: 4 },
+      { userId: 5 }
+    ]);
+    const PBSD = [1, 2, 3, 4, 5];
     const sessionData = getSessionData({
-      monthOfBirth: 9,
-      selectedMonths: [1, 9]
+      monthOfBirth: 'sep',
+      selectedMonths: ['jan', 'sep']
     });
 
     it('calls selectNamesOfChildrenSelection', async () => {
       expect(sessionData.isNames).toEqual(true);
       await questionProtocol(sessionData, questionsMock, getPBSD);
       expect(sessionData.isNames).toEqual(false);
-
-      expect(
-        questionsMock.selectNamesOfChildrenSelection
-      ).toHaveBeenCalledTimes(1);
-      expect(questionsMock.selectNamesOfChildrenSelection).toHaveBeenCalledWith(
-        getPBSD(),
-        sessionData
-      );
+      expect(questionsMock.selectPictures).toHaveBeenCalledTimes(1);
+      expect(questionsMock.selectPictures).toHaveBeenCalledWith(PBSD);
     });
   });
 
@@ -77,35 +77,12 @@ describe('questionProtocol', () => {
     it('calls selectContactNumber', async () => {
       expect(sessionData.isNames).toEqual(false);
       await questionProtocol(sessionData, questionsMock, getPBSD);
-
       expect(questionsMock.selectContactNumber).toHaveBeenCalledTimes(1);
       expect(questionsMock.selectContactNumber).toHaveBeenCalledWith();
     });
   });
 
-  describe('when there are no names to select and more than 8 IDs', () => {
-    const getPBSD = jest.fn(() => [1, 2, 3]);
-    const sessionData = getSessionData({
-      monthOfBirth: 9,
-      selectedMonths: [1, 9],
-      isNames: false
-    });
-
-    it('calls selectContactNumber', async () => {
-      expect(sessionData.isPictures).toEqual(true);
-      await questionProtocol(sessionData, questionsMock, getPBSD);
-      expect(sessionData.isPictures).toEqual(false);
-
-      expect(questionsMock.selectPictures).toHaveBeenCalledTimes(1);
-      expect(questionsMock.selectPictures).toHaveBeenCalledWith(
-        sessionData,
-        getPBSD()
-      );
-    });
-  });
-
   describe('when there is more than 1 IDs and isGrandParentNameSelection', () => {
-    const getPBSD = jest.fn(() => [1, 2, 3]);
     const sessionData = getSessionData({
       monthOfBirth: 9,
       selectedMonths: [1, 9],
@@ -113,16 +90,21 @@ describe('questionProtocol', () => {
       isPictures: false,
       isGrandParentNameSelection: true
     });
+    const getPBSD = jest.fn(() => [
+      { userId: 1 },
+      { userId: 2 },
+      { userId: 3 }
+    ]);
+    const PBSD = [1, 2, 3];
 
     it('calls selectContactNumber', async () => {
       expect(sessionData.isGrandParentNameSelection).toEqual(true);
       await questionProtocol(sessionData, questionsMock, getPBSD);
       expect(sessionData.isGrandParentNameSelection).toEqual(false);
-
       expect(questionsMock.selectGrandParentName).toHaveBeenCalledTimes(1);
       expect(questionsMock.selectGrandParentName).toHaveBeenCalledWith(
         sessionData,
-        getPBSD()
+        PBSD
       );
     });
   });
@@ -151,8 +133,8 @@ describe('questionProtocol', () => {
   describe('when there are no IDs left', () => {
     const getPBSD = jest.fn(() => []);
     const sessionData = getSessionData({
-      monthOfBirth: 9,
-      selectedMonths: [1, 9],
+      monthOfBirth: 'sep',
+      selectedMonths: ['jan', 'sep'],
       isNames: false,
       isPictures: false,
       isGrandParentNameSelection: false
