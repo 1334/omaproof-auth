@@ -14,7 +14,7 @@ amqp.connect(
       ch.prefetch(1);
       ch.consume(q, async function reply(msg) {
         try {
-          let received = JSON.parse(msg.content.toString());
+          const received = JSON.parse(msg.content.toString());
           const { token, answer } = received;
           let response = await authenticationProcess(token, answer);
           response = JSON.stringify(response);
@@ -37,7 +37,7 @@ amqp.connect(
       ch.consume(
         p,
         async msg => {
-          await _dumpData(JSON.parse(msg.content.toString())).catch(() =>
+          await _saveData(JSON.parse(msg.content.toString())).catch(() =>
             ch.ack(msg)
           );
           ch.ack(msg);
@@ -48,8 +48,7 @@ amqp.connect(
   }
 );
 
-const _dumpData = async receivedPackage => {
-  console.log('received package: ', receivedPackage);
+const _saveData = async receivedPackage => {
   const kids = await Promise.all(
     receivedPackage.kids.map(el => {
       return createGrandChild(el);

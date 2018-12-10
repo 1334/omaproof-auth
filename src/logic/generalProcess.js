@@ -3,8 +3,11 @@ const { getSession } = require('./processHelpers');
 const { handleAnswer } = require('./answerLogic');
 const { questionProtocol } = require('./questionLogic');
 
-// Startup the authentication process
-// the endpoint that we will hit
+/**
+ * Function to start up the authentication process and retrieve / update the session data based on the token and answer
+ * @param {*} token
+ * @param {*} answer
+ */
 const authenticationProcess = async (token, answer) => {
   let question;
   let { sessionToken, sessionData } = await getSession(token);

@@ -9,7 +9,7 @@ const {
 const { randomNumberGenerator } = require('./helperFunctions');
 const faker = require('faker');
 /**
- * Generate the questions to the front-end
+ * Generate the questions which will be posed to the front end
  */
 
 const monthOfBirthSelection = () => {
